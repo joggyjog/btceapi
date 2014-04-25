@@ -48,7 +48,7 @@ class btceapi:
             elif method == 'ActiveOrders' and data['success'] == 0 and data['error'] == 'no orders':
                 return([])
             else:
-                print('[WARNING]: ' + method + ' failed => ' + data['error'])
+                print('[ERROR]: ' + method + ' failed => ' + data['error'])
         return(None)
 
     def get_request(self, pair, method):
@@ -57,6 +57,7 @@ class btceapi:
         if resp['status'] == '200':
             data = json.loads(content.decode())
             return(data)
+        print('[ERROR]: http request failed => ' + resp['status'])
         return(None)
 
     def get_info(self):
@@ -78,3 +79,8 @@ class btceapi:
         body['rate'] = round(rate, 8)
         body['amount'] = round(amount, 8)
         return(self.post_request('Trade', body))
+
+    def cancelorder(self, orderid):
+        body = {}
+        body['orderid'] = orderid
+        return(self.post_request('CancelOrder', body))
